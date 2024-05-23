@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Oxide.Plugins
 {
     [Info("One Push Boat", "VisEntities", "1.0.0")]
-    [Description("Corrects flipped boat orientation with just one push.")]
+    [Description("Unflips flipped boats with one push and optionally mounts the pusher to the driver seat.")]
     public class OnePushBoat : RustPlugin
     {
         #region Fields
@@ -91,7 +91,7 @@ namespace Oxide.Plugins
             if (!boat.IsFlipped())
                 return null;
 
-            TurnBoatUpright(boat);
+            UnflipBoat(boat);
 
             if (_config.MountPusherToDriverSeat)
             {
@@ -109,7 +109,7 @@ namespace Oxide.Plugins
 
         #region Helper Functions
 
-        private void TurnBoatUpright(BaseBoat boat)
+        private void UnflipBoat(BaseBoat boat)
         {
             boat.transform.rotation = Quaternion.Euler(0, boat.transform.rotation.eulerAngles.y, 0);
             boat.rigidBody.angularVelocity = Vector3.zero;
