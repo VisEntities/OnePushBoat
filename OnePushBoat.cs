@@ -107,7 +107,7 @@ namespace Oxide.Plugins
 
         #endregion Oxide Hooks
 
-        #region Helper Functions
+        #region Boat Unflipping
 
         private void UnflipBoat(BaseBoat boat)
         {
@@ -115,6 +115,10 @@ namespace Oxide.Plugins
             boat.rigidBody.angularVelocity = Vector3.zero;
             boat.rigidBody.velocity = Vector3.zero;
         }
+
+        #endregion Boat Unflipping
+
+        #region Driver Seat Retrieval
 
         private (BaseVehicle.MountPointInfo, int) GetDriverSeat(BaseVehicle vehicle)
         {
@@ -133,6 +137,6 @@ namespace Oxide.Plugins
             return (null, -1);
         }
 
-        #endregion Helper Functions
+        #endregion Driver Seat Retrieval
     }
 }
