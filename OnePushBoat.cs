@@ -1,9 +1,16 @@
-﻿using Newtonsoft.Json;
+﻿/*
+ * Copyright (C) 2024 Game4Freak.io
+ * This mod is provided under the Game4Freak EULA.
+ * Full legal terms can be found at https://game4freak.io/eula/
+ */
+
+using Newtonsoft.Json;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Oxide.Plugins
 {
-    [Info("One Push Boat", "VisEntities", "1.0.0")]
+    [Info("One Push Boat", "VisEntities", "1.1.0")]
     [Description("Unflips flipped boats with one push and optionally mounts the pusher to the driver seat.")]
     public class OnePushBoat : RustPlugin
     {
@@ -64,7 +71,7 @@ namespace Oxide.Plugins
             return new Configuration
             {
                 Version = Version.ToString(),
-                MountPusherToDriverSeat = true
+                MountPusherToDriverSeat = false
             };
         }
 
@@ -75,6 +82,7 @@ namespace Oxide.Plugins
         private void Init()
         {
             _plugin = this;
+            PermissionUtil.RegisterPermissions();
         }
 
         private void Unload()
@@ -86,6 +94,9 @@ namespace Oxide.Plugins
         private object OnVehiclePush(BaseBoat boat, BasePlayer player)
         {
             if (player == null || boat == null)
+                return null;
+
+            if (!PermissionUtil.HasPermission(player, PermissionUtil.USE))
                 return null;
 
             if (!boat.IsFlipped())
@@ -138,5 +149,31 @@ namespace Oxide.Plugins
         }
 
         #endregion Driver Seat Retrieval
+
+        #region Permissions
+
+        private static class PermissionUtil
+        {
+            public const string USE = "onepushboat.use";
+            private static readonly List<string> _permissions = new List<string>
+            {
+                USE,
+            };
+
+            public static void RegisterPermissions()
+            {
+                foreach (var permission in _permissions)
+                {
+                    _plugin.permission.RegisterPermission(permission, _plugin);
+                }
+            }
+
+            public static bool HasPermission(BasePlayer player, string permissionName)
+            {
+                return _plugin.permission.UserHasPermission(player.UserIDString, permissionName);
+            }
+        }
+
+        #endregion Permissions
     }
 }
